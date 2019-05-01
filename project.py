@@ -3,7 +3,7 @@ import json
 
 app = Flask(__name__)
 
-mode = 'DEV'
+mode = 'PROD'
 #mode = 'PROD'
 
 @app.route('/')
