@@ -1,3 +1,4 @@
 project_env/
 *.vim
 .sass-cache/
+*.DS_Store
