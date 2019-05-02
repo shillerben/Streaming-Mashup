@@ -13,7 +13,7 @@ def home_page():
     return render_template('index.html')
 
 @app.route('/result/<movie>')
-def map(movie):
+def result(movie):
     # utelly api call
     query = urllib.parse.urlencode({"term": movie, "country": "us"})
     url = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?" + query
@@ -22,19 +22,28 @@ def map(movie):
       "X-RapidAPI-Key": "f5785d17ecmsh292914dc61cf9a1p1a7434jsna1e418f64f4c"
     }
     response = requests.get(url, headers=headers)
-    if response.status_code == requests.codes.ok:
-        utelly_json = response.json()
-        if len(utelly_json["results"]) > 0:
-            first_result = utelly_json["results"][0]
-            title = first_result["name"]
-            poster_url = first_result["picture"]
-            locations = first_result["locations"]
-            return render_template('result.html', title=title, poster_url=poster_url, locations=locations)
-        else:
-            return render_template('not_found.html')
-    else:
+    if response.status_code != requests.codes.ok:
         return render_template('not_found.html')
+    utelly_json = response.json()
+    first_result = utelly_json["results"][0]
+    title = first_result["name"]
+    if len(utelly_json["results"]) > 0:
+        locations = first_result["locations"]
+    else:
+        locations = []
 
+    query = urllib.parse.urlencode({"apikey": "c667890", "t": movie})
+    url = "http://www.omdbapi.com/?" + query
+
+    response = requests.get(url)
+    if response.status_code != requests.codes.ok:
+        return render_template('not_found.html')
+    omdb_json = response.json()
+    year = omdb_json["Year"]
+    poster_url = omdb_json["Poster"]
+
+
+    return render_template('result.html', title=title, poster_url=poster_url, locations=locations, year=year)
     
 
 

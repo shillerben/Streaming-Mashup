@@ -1,2 +1,3 @@
 project_env/
 *.vim
+.sass-cache/
