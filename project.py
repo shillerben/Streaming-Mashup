@@ -33,25 +33,27 @@ def result(movie):
 
     query = urllib.parse.urlencode({"apikey": "c667890", "t": title,"Plot":"full"})
     url = "http://www.omdbapi.com/?" + query
+	response = requests.get(url)
+	if response.status_code != requests.codes.ok:
+		return render_template('not_found.html')
+	omdb_json = response.json()
+	year = omdb_json["Year"]
+	poster_url = omdb_json["Poster"]
+	movie_rating = omdb_json["Rated"]
+	movie_runtime = omdb_json["Runtime"]
+	movie_plot = omdb_json["Plot"]
+	movie_genre = omdb_json["Genre"]
+	imdb_rating = omdb_json["imdbRating"]
+	rotten_tomatoes = omdb_json["Ratings"][1]["Value"]
+	movie_actors = omdb_json["Actors"]
+	movie_website = omdb_json["Website"]
+	movie_director = omdb_json["Director"]
+	walmartLink = "https://www.walmart.com/search/?cat_id=0&query="+ query
+	amazonLink = "https://www.amazon.com/s?k="+ query
+	BBLink = "https://www.bestbuy.com/site/searchpage.jsp?st="+ query
+	shoppingLinks = {walmart : walmartLink, amazon : amazonLink, bestBuy: BBLink}
+    return render_template('result.html', title=title, poster_url=poster_url, locations=locations, year=year, rating = movie_rating, runtime = movie_runtime, plot = movie_plot, genre = movie_genre, imRating = imdb_rating, tomato = rotten_tomatoes, actors = movie_actors, website = movie_website, director = movie_director, walmart = walmartLink, amazon = amazonLink, bestBuy = BBLink)
 
-    response = requests.get(url)
-    if response.status_code != requests.codes.ok:
-        return render_template('not_found.html')
-    omdb_json = response.json()
-    year = omdb_json["Year"]
-    poster_url = omdb_json["Poster"]
-    movie_rating = omdb_json["Rated"]
-    movie_runtime = omdb_json["Runtime"]
-    movie_plot = omdb_json["Plot"]
-    movie_genre = omdb_json["Genre"]
-    imdb_rating = omdb_json["imdbRating"]
-    rotten_tomatoes = omdb_json["Ratings"][1]["Value"]
-    movie_actors = omdb_json["Actors"]
-    movie_website = omdb_json["Website"]
-    movie_director = omdb_json["Director"]
-
-    return render_template('result.html', title=title, poster_url=poster_url, locations=locations, year=year, rating = movie_rating, runtime = movie_runtime, plot = movie_plot, genre = movie_genre, imRating = imdb_rating, tomato = rotten_tomatoes, actors = movie_actors, website = movie_website, director = movie_director)
-    
 
 
 if __name__ == "__main__":
