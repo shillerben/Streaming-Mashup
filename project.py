@@ -14,26 +14,9 @@ def home_page():
 
 @app.route('/result/<movie>')
 def result(movie):
-    # utelly api call
-    query = urllib.parse.urlencode({"term": movie, "country": "us"})
-    url = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?" + query
-    headers={
-      "X-RapidAPI-Host": "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com",
-      "X-RapidAPI-Key": "f5785d17ecmsh292914dc61cf9a1p1a7434jsna1e418f64f4c"
-    }
-    response = requests.get(url, headers=headers)
-    if response.status_code != requests.codes.ok:
-        return render_template('not_found.html')
-    utelly_json = response.json()
-    if len(utelly_json["results"]) == 0:
-        return render_template('not_found.html')
-    first_result = utelly_json["results"][0]
-    title = first_result["name"]
-    locations = first_result["locations"]
-
-    query = urllib.parse.urlencode({"apikey": "c667890", "t": title,"Plot":"full"})
+    query = urllib.parse.urlencode({"apikey": "c667890", "t": movie,"Plot":"full"})
     url = "http://www.omdbapi.com/?" + query
-
+    
     response = requests.get(url)
     if response.status_code != requests.codes.ok:
         return render_template('not_found.html')
@@ -44,13 +27,32 @@ def result(movie):
     movie_runtime = omdb_json["Runtime"]
     movie_plot = omdb_json["Plot"]
     movie_genre = omdb_json["Genre"]
-    imdb_rating = omdb_json["imdbRating"]
-    rotten_tomatoes = omdb_json["Ratings"][1]["Value"]
+    movie_reviews = omdb_json["Ratings"]
     movie_actors = omdb_json["Actors"]
     movie_website = omdb_json["Website"]
     movie_director = omdb_json["Director"]
+    movie_title = omdb_json["Title"]
+    # utelly api call
+    query = urllib.parse.urlencode({"term": movie_title, "country": "us"})
+    url = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?" + query
+    headers={
+      "X-RapidAPI-Host": "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com",
+      "X-RapidAPI-Key": "f5785d17ecmsh292914dc61cf9a1p1a7434jsna1e418f64f4c"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code != requests.codes.ok:
+        return render_template('not_found.html')
+    utelly_json = response.json()
+    if len(utelly_json["results"]) == 0:
+        locations = []
+    else:
+        first_result = utelly_json["results"][0]
+        #title = first_result["name"]
+        locations = first_result["locations"]
 
-    return render_template('result.html', title=title, poster_url=poster_url, locations=locations, year=year, rating = movie_rating, runtime = movie_runtime, plot = movie_plot, genre = movie_genre, imRating = imdb_rating, tomato = rotten_tomatoes, actors = movie_actors, website = movie_website, director = movie_director)
+
+
+    return render_template('result.html', title=movie_title, poster_url=poster_url, locations=locations, year=year, rating = movie_rating, runtime = movie_runtime, plot = movie_plot, genre = movie_genre, reviews = movie_reviews, actors = movie_actors, website = movie_website, director = movie_director)
     
 
 
