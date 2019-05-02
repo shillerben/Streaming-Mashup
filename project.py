@@ -30,6 +30,8 @@ def map(movie):
             poster_url = first_result["picture"]
             locations = first_result["locations"]
             return render_template('result.html', title=title, poster_url=poster_url, locations=locations)
+        else:
+            return render_template('not_found.html')
     else:
         return render_template('not_found.html')
 
