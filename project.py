@@ -25,12 +25,11 @@ def result(movie):
     if response.status_code != requests.codes.ok:
         return render_template('not_found.html')
     utelly_json = response.json()
+    if len(utelly_json["results"]) == 0:
+        return render_template('not_found.html')
     first_result = utelly_json["results"][0]
     title = first_result["name"]
-    if len(utelly_json["results"]) > 0:
-        locations = first_result["locations"]
-    else:
-        locations = []
+    locations = first_result["locations"]
 
     query = urllib.parse.urlencode({"apikey": "c667890", "t": title,"Plot":"full"})
     url = "http://www.omdbapi.com/?" + query
