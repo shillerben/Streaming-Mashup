@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>result - Streaming Mashup</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/mystyles.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css"> -->
+    {% block script %}{% endblock %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous">
+  </head>
+  <body>
+    <section class="hero is-dark is-bold"> 
+      <div class="hero-body">
+        <div class="container">
+          <a href="/">
+            <h1 class="title"><img src="../static/Assets/video-camera.png" style="height: 1.5em;">Streaming Mashup</h1>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <div>
+          Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
