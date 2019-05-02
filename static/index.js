@@ -10,6 +10,10 @@ function chooseFirst(event) {
     if (matchContainer.firstChild) {
         buildURL(matchContainer.firstChild.firstChild.firstChild.firstChild.innerHTML);
     }
+    else {
+        var currentInput = document.getElementById("query").value;
+        buildURL(currentInput);
+    }
 }
 
 function addButton(movie, container) {

@@ -30,12 +30,12 @@
         <div class="columns is-mobile">
           <div class="column is-half-mobile is-one-fifth-desktop">
             <figure class="image">
-              <img src="../static/Assets/Thor.jpg"/>
+              <img src={{ poster_url }}/>
             </figure>
           </div>
           <div class="column is-hidden-mobile">
             <div class="content">
-              <h1 class="title">Thor</h1>
+              <h1 class="title">{{ title }}</h1>
               <h4>Release date: 2011</h4>
               <h4>IMDB Rating: 7.0/10</h4>
               <h4>Rotten Tomatoes: 77%</h4>
@@ -45,7 +45,7 @@
           </div>
           <div class="column is-hidden-tablet">
             <div class="content">
-              <h3 class="title">Thor</h3>
+              <h3 class="title">{{ title }}</h3>
               <h6>Release date: 2011</h6>
               <h6>IMDB Rating: 7.0/10</h6>
               <h6>Rotten Tomatoes: 77%</h6>
@@ -67,9 +67,11 @@
         <div class="content">
           <h2>Streaming Availability</h2>
           <ul>
-            <li>Hulu</li>
-            <li>Netflix</li>
-            <li>Amazon Prime Video</li>
+            {% for location in locations %}
+            <li>
+              <a href={{ location.url }}>{{ location.display_name }}</a>
+            </li>
+            {% endfor %}
           </ul>
         </div>
         <hr>
