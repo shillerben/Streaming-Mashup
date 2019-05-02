@@ -2,11 +2,25 @@ from flask import Flask, render_template, request, jsonify
 import urllib.parse
 import requests
 import json
+import socket
 
 app = Flask(__name__)
 
 mode = "DEV"
 #mode = 'PROD'
+
+def get_ip_address():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
+
+def get_lat_lon(ipaddr):
+    url = "http://ip-api.com/json/" + ipaddr
+    response = requests.get(url)
+    response_json = response.json()
+    lat = response_json["lat"]
+    lon = response_json["lon"]
+    return (lat, lon)
 
 @app.route('/')
 def home_page():
