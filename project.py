@@ -8,18 +8,16 @@ app = Flask(__name__)
 
 mode = "DEV"
 #mode = 'PROD'
-
-def get_ip_address():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
-
 def get_lat_lon(ipaddr):
-    url = "http://ip-api.com/json/" + ipaddr
-    response = requests.get(url)
-    response_json = response.json()
-    lat = response_json["lat"]
-    lon = response_json["lon"]
+    if mode == 'PROD':
+        url = "http://ip-api.com/json/" + str(ipaddr)
+        response = requests.get(url)
+        response_json = response.json()
+        lat = response_json["lat"]
+        lon = response_json["lon"]
+    else:
+        lat = 30.620556
+        lon = -96.343056
     return (lat, lon)
 
 @app.route('/')
@@ -28,6 +26,14 @@ def home_page():
 
 @app.route('/result/<movie>')
 def result(movie):
+    if mode == 'PROD':
+        if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+            ip = request.environ['REMOTE_ADDR']
+        else:
+            ip = request.environ['HTTP_X_FORWARDED_FOR']
+    else:
+        ip = "50.24.110.76"
+    (lat, lon) = get_lat_lon(ip)
     query = urllib.parse.urlencode({"apikey": "c667890", "t": movie,"Plot":"full"})
     url = "http://www.omdbapi.com/?" + query
 
@@ -77,6 +83,6 @@ def result(movie):
 
 if __name__ == "__main__":
     if mode == 'DEV':
-        app.run(host='10.1.4.232', debug=True, port=5000)
+        app.run(host='0.0.0.0', debug=True, port=5000)
     else:
         app.run(host='0.0.0.0', port=80)
