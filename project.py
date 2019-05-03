@@ -46,10 +46,11 @@ def result(movie):
     movie_website = omdb_json["Website"]
     movie_director = omdb_json["Director"]
     movie_title = omdb_json["Title"]
-    walmartLink = "https://www.walmart.com/search/?cat_id=0&query="+query
-    amazonLink="https://www.amazon.com/s?k="+query
-    BBLink="https://www.bestbuy.com/site/searchpage.jsp?st="+query
-    shoppingLinks = {walmart : walmartLink, amazon : amazonLink, bestBuy: BBLink}
+    searchTitle = movie_title.replace(" ", "+")
+    walmart = "https://www.walmart.com/search/?cat_id=0&query="+searchTitle
+    amazon="https://www.amazon.com/s?k="+searchTitle
+    bestBuy="https://www.bestbuy.com/site/searchpage.jsp?st="+searchTitle
+    #shoppingLinks = {walmart : walmartLink, amazon : amazonLink, bestBuy: BBLink}
     # utelly api call
     query = urllib.parse.urlencode({"term": movie_title, "country": "us"})
     url = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?" + query
@@ -70,12 +71,12 @@ def result(movie):
 
 
 
-    return render_template('result.html', title=movie_title, poster_url=poster_url, locations=locations, year=year, rating = movie_rating, runtime = movie_runtime, plot = movie_plot, genre = movie_genre, reviews = movie_reviews, actors = movie_actors, website = movie_website, director = movie_director)#, walmart = walmartLink, bestBuy = BBLink, amazon = amazonLink)
+    return render_template('result.html', title=movie_title, poster_url=poster_url, locations=locations, year=year, rating = movie_rating, runtime = movie_runtime, plot = movie_plot, genre = movie_genre, reviews = movie_reviews, actors = movie_actors, website = movie_website, director = movie_director, walmart = walmart, bestBuy = bestBuy, amazon = amazon)
 
 
 
 if __name__ == "__main__":
     if mode == 'DEV':
-        app.run(host='0.0.0.0', debug=True, port=5000)
+        app.run(host='10.1.4.232', debug=True, port=5000)
     else:
         app.run(host='0.0.0.0', port=80)
