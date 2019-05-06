@@ -40,6 +40,7 @@ def result(movie):
 
     response = requests.get(url)
     if response.status_code != requests.codes.ok:
+        print("OMDB failed")
         return render_template('not_found.html')
     omdb_json = response.json()
     year = omdb_json["Year"]
@@ -67,6 +68,7 @@ def result(movie):
     }
     response = requests.get(url, headers=headers)
     if response.status_code != requests.codes.ok:
+        print("UTELLY failed")
         return render_template('not_found.html')
     utelly_json = response.json()
     if len(utelly_json["results"]) == 0:
@@ -85,22 +87,27 @@ def result(movie):
     url = "https://api-gate2.movieglu.com/filmLiveSearch/?" + query
 
     response = requests.get(url, headers=headers)
+    print(response)
     if response.status_code != requests.codes.ok:
-        return render_template('not_found.html')
-    movieglu_json = response.json()
-    glu_id = movieglu_json["films"][0]["film_id"]
+        print("MOVIEGLU 1 failed")
+        cinemas=[]
+    else:
+        movieglu_json = response.json()
+        glu_id = movieglu_json["films"][0]["film_id"]
 
-    # getting showtimes based on glu_id
-    headers = {"api-version": "v200", "Authorization": "Basic U0NIT18xMDoxbFhJaFpNMzlod08=", "x-api-key": "AFvdDRsfgU1z0UdFCYdDo6584GlekAKJ7sFHuLzW", "device-datetime": now, "territory": "US", "client": "SCHO_10", "geolocation": location}
-    today = datetime.date.today().isoformat()
-    query = urllib.parse.urlencode({"film_id": glu_id, "date": today})
-    url = "https://api-gate2.movieglu.com/filmShowTimes/?" + query
+        # getting showtimes based on glu_id
+        headers = {"api-version": "v200", "Authorization": "Basic U0NIT18xMDoxbFhJaFpNMzlod08=", "x-api-key": "AFvdDRsfgU1z0UdFCYdDo6584GlekAKJ7sFHuLzW", "device-datetime": now, "territory": "US", "client": "SCHO_10", "geolocation": location}
+        today = datetime.date.today().isoformat()
+        query = urllib.parse.urlencode({"film_id": glu_id, "date": today})
+        url = "https://api-gate2.movieglu.com/filmShowTimes/?" + query
 
-    response = requests.get(url, headers=headers)
-    if response.status_code != requests.codes.ok:
-        return render_template('not_found.html')
-    movieglu_json2 = response.json()
-    cinemas = movieglu_json2["cinemas"]
+        response = requests.get(url, headers=headers)
+        if response.status_code != requests.codes.ok:
+            print("MOVIEGLU 2 failed")
+            cinemas=[]
+        else:
+            movieglu_json2 = response.json()
+            cinemas = movieglu_json2["cinemas"]
 
 
     return render_template('result.html', title=movie_title, poster_url=poster_url, locations=locations, year=year, rating=movie_rating, runtime=movie_runtime, plot=movie_plot, genre=movie_genre, reviews=movie_reviews, actors=movie_actors, website=movie_website, director=movie_director, walmart=walmart, bestBuy=bestBuy, amazon=amazon, cinemas=cinemas)
