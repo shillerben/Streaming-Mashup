@@ -82,9 +82,9 @@
         <div class="content">
           <h2>Showtimes</h2>
           <ul>
-            <li>Theater 1: 7:30pm, 9:30pm</li>
-            <li>Theater 2: 6:00pm, 8:00pm, 10:00pm</li>
-            <li>Theater 3: 5:30pm, 8:30pm</li>
+            {% for cinema in cinemas %}
+            <li>{{ cinema.cinema_name }}: {% for time in cinema.showings.Standard.times %}{{ time.start_time }}, {% endfor %}</li>
+            {% endfor %}
           </ul>
         </div>
     </section>

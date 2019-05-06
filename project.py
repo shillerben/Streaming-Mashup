@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+import datetime
 import urllib.parse
 import requests
 import json
@@ -75,9 +76,34 @@ def result(movie):
         #title = first_result["name"]
         locations = first_result["locations"]
 
+    # -----------------------------------------------------------------------------
+    # movieglu api (getting glu_id)
+    now = datetime.datetime.now().isoformat(timespec="milliseconds")
+    location = str(lat) + ";" + str(lon)
+    headers = {"api-version": "v200", "Authorization": "Basic U0NIT18xMDoxbFhJaFpNMzlod08=", "x-api-key": "AFvdDRsfgU1z0UdFCYdDo6584GlekAKJ7sFHuLzW", "device-datetime": now, "territory": "US", "client": "SCHO_10"}
+    query = urllib.parse.urlencode({"query": movie, "n": "1"})
+    url = "https://api-gate2.movieglu.com/filmLiveSearch/?" + query
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != requests.codes.ok:
+        return render_template('not_found.html')
+    movieglu_json = response.json()
+    glu_id = movieglu_json["films"][0]["film_id"]
+
+    # getting showtimes based on glu_id
+    headers = {"api-version": "v200", "Authorization": "Basic U0NIT18xMDoxbFhJaFpNMzlod08=", "x-api-key": "AFvdDRsfgU1z0UdFCYdDo6584GlekAKJ7sFHuLzW", "device-datetime": now, "territory": "US", "client": "SCHO_10", "geolocation": location}
+    today = datetime.date.today().isoformat()
+    query = urllib.parse.urlencode({"film_id": glu_id, "date": today})
+    url = "https://api-gate2.movieglu.com/filmShowTimes/?" + query
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != requests.codes.ok:
+        return render_template('not_found.html')
+    movieglu_json2 = response.json()
+    cinemas = movieglu_json2["cinemas"]
 
 
-    return render_template('result.html', title=movie_title, poster_url=poster_url, locations=locations, year=year, rating = movie_rating, runtime = movie_runtime, plot = movie_plot, genre = movie_genre, reviews = movie_reviews, actors = movie_actors, website = movie_website, director = movie_director, walmart = walmart, bestBuy = bestBuy, amazon = amazon)
+    return render_template('result.html', title=movie_title, poster_url=poster_url, locations=locations, year=year, rating=movie_rating, runtime=movie_runtime, plot=movie_plot, genre=movie_genre, reviews=movie_reviews, actors=movie_actors, website=movie_website, director=movie_director, walmart=walmart, bestBuy=bestBuy, amazon=amazon, cinemas=cinemas)
 
 
 
