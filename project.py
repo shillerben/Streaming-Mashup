@@ -102,7 +102,6 @@ def result(movie):
     movieglu_json2 = response.json()
     cinemas = movieglu_json2["cinemas"]
 
-
     return render_template('result.html', title=movie_title, poster_url=poster_url, locations=locations, year=year, rating=movie_rating, runtime=movie_runtime, plot=movie_plot, genre=movie_genre, reviews=movie_reviews, actors=movie_actors, website=movie_website, director=movie_director, walmart=walmart, bestBuy=bestBuy, amazon=amazon, cinemas=cinemas)
 
 

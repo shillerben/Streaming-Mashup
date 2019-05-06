@@ -2,6 +2,9 @@ import guidebox
 import json
 import requests
 from ast import literal_eval
+
+# this program was used to fill our movieList for autocomplete
+
 # ****** NOTE: we are limited to 1000 free calls ***********
 key = "f3314444637db1c98eb8812319820aab68ea8065"
 guidebox.api_key = key
